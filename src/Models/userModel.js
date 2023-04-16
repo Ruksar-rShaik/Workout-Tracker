@@ -3,6 +3,7 @@ const mongoose=require("mongoose")
 const userSchema=new mongoose.Schema({
     name:{
         type:String,
+        unique:true,
         required:true
     },
     gender:{
@@ -23,6 +24,31 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         unique:true
+    }, 
+    workouts:[{
+        workoutId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"workout",
+
+    },
+    time:{
+        type:Number,
+        
+    },
+    _id:false
+}],
+weeklyCaloriesBurn:{
+    type:Number
+},
+MonthlyCaloriesBurn:{
+    type:Number
+},
+    caloriesBurnTillNow:{
+        type:Number
+    },
+    isDeleted:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true})
 
