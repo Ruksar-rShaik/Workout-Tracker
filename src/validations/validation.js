@@ -10,5 +10,7 @@ const isValidPassword = (value) => {
     const passRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&#])[A-Za-z\d@$!%#?&]{8,15}$/  
     return passRegex.test(value)
 };
-
-module.exports = {validMail, validNumber,isValidAlpha,isValidPassword}
+const chkNum=(value)=>{
+    return (value.match(/[0-9]/))
+}
+module.exports = {validMail, validNumber,isValidAlpha,isValidPassword,chkNum}

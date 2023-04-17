@@ -8,7 +8,7 @@ const tokenVerify=function(req,res,next){
         
         if(!token) return res.status(400).send({status:false,msg:"Token is required"})
         
-        jwt.verify(token,"workout string",function(err,decodedToken){
+        jwt.verify(token,process.env.JwtStr,function(err,decodedToken){
         if(err) return res.status(401).send({msg:"Invalid Token"})
         if (decodedToken) {
             req.decodeToken = decodedToken.userId

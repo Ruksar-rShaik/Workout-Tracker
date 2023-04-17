@@ -17,7 +17,7 @@ router.post("/workout",workout)
 //router.post("/getWorkout",gettempWorkout)
 
 router.post("/session",tokenVerify,calorieCount)
-router.get("/SugstWorkout",tokenVerify,TargtCalrs)
+router.post("/SugstWorkout",tokenVerify,TargtCalrs)
 router.delete("/deleteSsn/:wrktSSnId",tokenVerify,deleteSession)
 router.get("/getSingleUser",tokenVerify,getAllSessions)
 

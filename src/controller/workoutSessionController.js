@@ -3,6 +3,7 @@ const workoutModel=require("../Models/workoutModel")
 const userModel = require("../Models/userModel")
 const {isValidObjectId}=require('mongoose')
 const moment=require("moment")
+const {chkNum}=require("../validations/validation")
 
 const calorieCount=async(req,res)=>{
    try  {
@@ -16,8 +17,7 @@ const calorieCount=async(req,res)=>{
     if(!workout) return res.status(400).send({status:false, message:"please provide type of exercise"})
     if(!timeDuration) return res.status(400).send({status:false, message:"please provide time duration"})
   
-     timeDuration=parseInt(timeDuration)
-    if(typeof(timeDuration)!="number") return res.status(400).send({status:false, message:"please provide time duration in number"})
+    if(!chkNum(timeDuration)) return res.status(400).send({status:false, message:"please provide time duration in number"})
  
     let calories=await workoutModel.findOne({workout:workout})
     console.log(calories)
@@ -42,13 +42,16 @@ const TargtCalrs= async(req,res)=>{
    try {
       let userId=req.decodeToken
     let data=req.body
+    console.log(data)
     let {timeDuration,targetCalories}=data
     if(!timeDuration) return res.status(400).send({status:false, message:" Please provide timeDuration"})
     if(!targetCalories) return res.status(400).send({status:false, message:"Please provide TargetCalories"})
+   if(!chkNum(timeDuration)) return res.status(400).send({status:false, message:"Enter timeDuration in Number"})
+   if(!chkNum(targetCalories)) return res.status(400).send({status:false, message:"Enter targetCalories in Number"})
     let target=(targetCalories/timeDuration)
     console.log(target)
     let workout=await workoutModel.find({calorieperMinute:{$gte:target}}).sort({calorieperMinute:1})
-    return res.status(200).send({status:false, data:workout[0]})
+    return res.status(200).send({status:true, data:workout[0]})
 }catch(err){
   return res.status(500).send({status:false, message:err.message})
 }

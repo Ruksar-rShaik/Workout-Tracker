@@ -55,7 +55,7 @@ const createUser= async(req,res)=>{
             if (!user) return res.status(400).send({ status: false, message: 'email is incorrect' });
             bcrypt.compare(password, user.password,(err,result)=>{
             if(result){
-             let token=jwt.sign({userId:user._id},"workout string")
+             let token=jwt.sign({userId:user._id},process.env.JwtStr)
              return res.status(200).send({ status: true, message: 'Login successfully',token:token });
             }
             else return res.status(400).send({status:false, message:"password is incorrect"})
