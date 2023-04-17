@@ -29,7 +29,6 @@ router.get("/test")
 
 
 
-
 router.all("/*",(req,res)=>{res.status(404).send({status:false,message:"url not found"})})
 
 

@@ -23,13 +23,15 @@ const createUser= async(req,res)=>{
         if (!password) return res.status(400).send({ status: false, message: 'password is required, please enter password to register' });
         if (isValidPassword(password)) return res.status(400).send({ status: false, message: 'password is weak, please enter a strong password to register' });
 
-        let user = await userModel.findOne({ $or: [{ email: email }, { phone: phone }] });
+        let user = await userModel.findOne({ $or: [{ email: email }, { phone: phone },{name:name}] });
         if (user) {
             if(user.name==name) return res.status(409).send({status:false, message:"name already in use, please enter a unique name to register"}) 
            if (user.email == email)
                 return res.status(409).send({ status: false, message: 'email already in use, please enter a unique email to register' });
             if (user.phone == phone)
                 return res.status(409).send({ status: false, message: 'phone number is already in use, please enter a unique phone number to register' });
+            if (user.name == name)
+                return res.status(409).send({ status: false, message: `${name}is already in use, please enter a unique name`  });   
         }
         const saltRounds=10
         let hash=await bcrypt.hash(password,saltRounds)
@@ -48,7 +50,7 @@ const createUser= async(req,res)=>{
             const user = await userModel.findOne({ email: email });
         
             if(user){
-            if(user.isDeleted==true) return res.status(400).send({status:false,message:"user not found"})
+            if(user.isDeleted==true) return res.status(404).send({status:false,message:"user not found"})
             }
             if (!user) return res.status(400).send({ status: false, message: 'email is incorrect' });
             bcrypt.compare(password, user.password,(err,result)=>{
@@ -59,10 +61,6 @@ const createUser= async(req,res)=>{
             else return res.status(400).send({status:false, message:"password is incorrect"})
            })
          
-                   
-        // let token=jwt.sign({userId:user._id},"workout string")
-        // return res.status(200).send({ status: true, message: 'Login successfully', userId:user._id, token:token });
-        
     }
         catch (error) {
             return res.status(500).send({ status: false, message: error.message })
@@ -71,7 +69,7 @@ const createUser= async(req,res)=>{
 
     const getUserDetails= async (req,res)=>{
         let data=await userModel.find({isDeleted:false}).select({name:1,caloriesBurnTillNow:1,_id:0}).sort({caloriesBurnTillNow:-1})
-        //populate("profileOf", { userName: 1, _id: 0 })
+        
         return res.status(200).send({status:true ,data:data})
     }
 

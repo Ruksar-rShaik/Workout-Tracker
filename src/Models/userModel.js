@@ -37,12 +37,7 @@ const userSchema=new mongoose.Schema({
     },
     _id:false
 }],
-weeklyCaloriesBurn:{
-    type:Number
-},
-MonthlyCaloriesBurn:{
-    type:Number
-},
+
     caloriesBurnTillNow:{
         type:Number
     },

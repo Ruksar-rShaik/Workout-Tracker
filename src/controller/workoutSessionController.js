@@ -9,10 +9,10 @@ const calorieCount=async(req,res)=>{
     let data=req.body
      let userId=req.decodeToken
     let {workout,timeDuration}=data
-   
+    console.log(data)
     if(!userId) return res.status(400).send({status:false, message:"login first"})
     data.userId=userId
-    //if(req.decodeToken!=userId) return res.status(403).send({status:false,msg:"you are not aunthenticated"})
+    
     if(!workout) return res.status(400).send({status:false, message:"please provide type of exercise"})
     if(!timeDuration) return res.status(400).send({status:false, message:"please provide time duration"})
   
@@ -20,7 +20,7 @@ const calorieCount=async(req,res)=>{
     if(typeof(timeDuration)!="number") return res.status(400).send({status:false, message:"please provide time duration in number"})
  
     let calories=await workoutModel.findOne({workout:workout})
-    
+    console.log(calories)
     let total=timeDuration*(calories.calorieperMinute)
     total = total.toFixed(2);
     
