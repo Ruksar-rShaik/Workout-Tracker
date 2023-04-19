@@ -18,15 +18,15 @@ const calorieCount=async(req,res)=>{
     if(!timeDuration) return res.status(400).send({status:false, message:"please provide time duration"})
   
     if(!chkNum(timeDuration)) return res.status(400).send({status:false, message:"please provide time duration in number"})
- 
+    
     let calories=await workoutModel.findOne({workout:workout})
     console.log(calories)
     let total=timeDuration*(calories.calorieperMinute)
     total = total.toFixed(2);
     
     const user = await userModel.findByIdAndUpdate(userId,{$inc:{caloriesBurnTillNow:total}});
-    user.workouts.push({ workoutId: calories._id, time:timeDuration });
-    await user.save()
+    // user.workouts.push({ workoutId: calories._id, time:timeDuration });
+    // await user.save()
    
     data.totalCaloriesBurn=total
     data.date=moment()
@@ -44,6 +44,7 @@ const TargtCalrs= async(req,res)=>{
     let data=req.body
     console.log(data)
     let {timeDuration,targetCalories}=data
+    console.log(data)
     if(!timeDuration) return res.status(400).send({status:false, message:" Please provide timeDuration"})
     if(!targetCalories) return res.status(400).send({status:false, message:"Please provide TargetCalories"})
    if(!chkNum(timeDuration)) return res.status(400).send({status:false, message:"Enter timeDuration in Number"})
@@ -63,9 +64,10 @@ const getAllSessions= async (req,res)=>{
         if(!userId) return res.status(400).send({status:false,message:"login first"})
     if(!isValidObjectId(userId)) return res.send("Invalid mongoose objectId")
        
-        let data=await WSM.find({userId:userId})
+        let data=await WSM.find({userId:userId,isDeleted:false})
         if(!data) return res.status(400).send({status:true,message:"no sessions found"})
         data.sort((a, b) => new Date(b.date) - new Date(a.date))
+        
         return res.status(200).send({status:true,data:data})
    }catch(err){
     return res.status(500).send(err.message)
@@ -76,12 +78,16 @@ const deleteSession=async (req,res)=>{
     let userId=req.decodeToken
     
     let workoutSsnId=req.params.wrktSSnId
+    console.log(workoutSsnId)
     if(!userId) return res.status(400).send({status:false, message:"please provide userId"})
     if(!workoutSsnId) return res.status(400).send({status:false,message:"workout sessionId is required"})
     if(!isValidObjectId(workoutSsnId)) return res.status(400).send({status:false, message:"Invalid workout sessionId"})
     let data=await WSM.findById({_id:workoutSsnId,isDeleted:false})
+    console.log(data)
     if(!data) return res.status(404).send({status:false, message:"No session found"})
+    let con=await userModel.findOneAndUpdate({_id:data.userId},{$inc:{caloriesBurnTillNow:-data.totalCaloriesBurn}},{new:true})
     await WSM.findByIdAndUpdate({_id:workoutSsnId},{isDeleted:true})
+    console.log(con)
     return res.status(200).send({status:false, message:"Session deleted Successfully"})
 }
 

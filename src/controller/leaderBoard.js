@@ -20,6 +20,7 @@ const monthlyLeaderBoard= async (req, res) => {
                 $gte: startOfMonth.toDate(),
                 $lt: endOfMonth.toDate(),
               },
+              isDeleted: false 
             },
           },
           // group by user and sum total calories burned
@@ -80,6 +81,7 @@ const monthlyLeaderBoard= async (req, res) => {
             $gte: startOfWeek.toDate(),
             $lt: endOfWeek.toDate(),
           },
+          isDeleted:false
         },
       },
       // group by user and sum total calories burned

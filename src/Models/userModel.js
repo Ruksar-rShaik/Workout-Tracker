@@ -25,18 +25,17 @@ const userSchema=new mongoose.Schema({
         required:true,
         unique:true
     }, 
-    workouts:[{
-        workoutId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"workout",
-
-    },
-    time:{
-        type:Number,
+//     workouts:[{
+//         workoutId:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"workout",
+//     },
+//     time:{
+//         type:Number,
         
-    },
-    _id:false
-}],
+//     },
+//     _id:false
+// }],
 
     caloriesBurnTillNow:{
         type:Number
